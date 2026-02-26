@@ -1,113 +1,140 @@
-# Hospital Management System (MERN Stack)
+# 🏥 MediCare — Hospital Management System
+**MERN Stack • JWT Auth • Role-Based Access • Tailwind CSS**
 
-A full-featured, production-ready Hospital Management System built with MongoDB, Express.js, React, and Node.js.
-
----
-
-## Features
-
-### Roles
-- **Admin** - Full system control, analytics dashboard
-- **Doctor** - Appointment management, prescriptions
-- **Patient** - Book appointments, view prescriptions
-
-### Key Functionality
-- JWT-based authentication with role protection
-- Book and manage appointments with time slots
-- Write and view prescriptions with medicine details
-- Admin analytics dashboard with real-time counts
-- Responsive UI with Tailwind CSS
-- Protected routes per role
+MediCare is a full-featured, production-ready Hospital Management System built using the **MERN stack (MongoDB, Express, React, Node.js)**.  
+It enables seamless management of patients, doctors, appointments, prescriptions, and admin analytics with secure authentication and role-based access.
 
 ---
 
-## Project Structure
+## ✨ Features
+
+### 👥 User Roles
+- 🛡️ **Admin** — Full system control with analytics dashboard
+- 👨‍⚕️ **Doctor** — Manage appointments & create prescriptions
+- 🧑‍🤝‍🧑 **Patient** — Book appointments & view prescriptions
+
+### ⚙️ Core Functionality
+- 🔐 JWT-based authentication & role protection
+- 📅 Appointment booking with time slots
+- 💊 Prescription management with medicine details
+- 📊 Admin analytics dashboard (real-time counts)
+- 🧭 Role-based protected routes
+- 📱 Fully responsive UI with Tailwind CSS
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | React 18, Vite, Tailwind CSS |
+| **State Management** | Context API |
+| **Routing** | React Router v6 |
+| **HTTP Client** | Axios |
+| **Backend** | Node.js, Express.js |
+| **Database** | MongoDB, Mongoose |
+| **Authentication** | JWT, bcryptjs |
+| **Notifications** | react-hot-toast |
+| **Icons** | lucide-react |
+
+---
+
+## 📁 Project Structure
 
 ```
 hospital-management-system/
 ├── backend/
-│   ├── config/          # DB connection
+│   ├── config/          # Database connection
 │   ├── controllers/     # Business logic
-│   ├── middleware/       # Auth & error handlers
+│   ├── middleware/      # Auth & error handling
 │   ├── models/          # Mongoose schemas
 │   ├── routes/          # Express routes
-│   └── server.js        # App entry point
+│   └── server.js        # Entry point
 │
 └── frontend/
     └── src/
         ├── components/  # Reusable UI components
-        ├── context/     # Auth Context
-        ├── pages/       # Admin, Doctor, Patient pages
-        ├── services/    # Axios API calls
-        └── App.jsx      # Router configuration
+        ├── context/     # Authentication context
+        ├── pages/       # Admin, Doctor, Patient dashboards
+        ├── services/    # API calls (Axios)
+        └── App.jsx      # Routing setup
 ```
 
 ---
 
-## Setup Instructions
+## 📦 Installation & Setup
 
-### Prerequisites
+### ✅ Prerequisites
 - Node.js v18+
-- MongoDB (local or Atlas)
+- MongoDB (Local or Atlas)
 
-### 1. Clone and Setup Backend
+---
+
+### 1️⃣ Clone Repository
 
 ```bash
-cd hospital-management-system/backend
+git clone https://github.com/Tikesh097/MediCare---Hospital-ManagementSystem
+cd MediCare---Hospital-ManagementSystem
+```
 
-# Install dependencies
+### 2️⃣ Backend Setup
+
+```bash
+cd backend
 npm install
-
-# Copy env file and configure
 cp .env.example .env
 ```
 
-Edit `backend/.env`:
+Update `backend/.env`:
+
 ```env
 MONGO_URI=mongodb://localhost:27017/hospital_management
-JWT_SECRET=your_super_secret_key_change_this
+JWT_SECRET=your_super_secret_key
 JWT_EXPIRE=7d
 PORT=5000
 NODE_ENV=development
 CLIENT_URL=http://localhost:5173
 ```
 
-### 2. Setup Frontend
+### 3️⃣ Frontend Setup
 
-```bash
-cd hospital-management-system/frontend
-
-# Install dependencies
-npm install
-
-# Optional: copy env file
-cp .env.example .env
-```
-
-### 3. Run Both Apps
-
-**Terminal 1 - Backend:**
-```bash
-cd backend
-npm run dev
-# Backend runs on http://localhost:5000
-```
-
-**Terminal 2 - Frontend:**
 ```bash
 cd frontend
-npm run dev
-# Frontend runs on http://localhost:5173
+npm install
+cp .env.example .env   # optional
 ```
 
 ---
 
-## Seed Admin Account
+## ▶️ Run Application
 
-Create an admin account by calling the register API or inserting directly:
+**Terminal 1 — Backend**
 
 ```bash
-# Via API (POST http://localhost:5000/api/auth/register)
+cd backend
+npm run dev
+```
+👉 http://localhost:5000
+
+**Terminal 2 — Frontend**
+
+```bash
+cd frontend
+npm run dev
+```
+👉 http://localhost:5173
+
+---
+
+## 🔑 Seed Admin Account
+
+**Option 1 — Using API**
+
+```http
+POST /api/auth/register
+```
+
+```json
 {
   "name": "Admin User",
   "email": "admin@hospital.com",
@@ -116,49 +143,85 @@ Create an admin account by calling the register API or inserting directly:
 }
 ```
 
-Or update an existing user's role to `admin` in MongoDB:
+**Option 2 — MongoDB**
+
 ```js
-db.users.updateOne({ email: "admin@hospital.com" }, { $set: { role: "admin" } })
+db.users.updateOne(
+  { email: "admin@hospital.com" },
+  { $set: { role: "admin" } }
+)
 ```
 
 ---
 
-## API Endpoints
+## 🔌 API Endpoints
 
 | Method | Endpoint | Access |
 |--------|----------|--------|
-| POST | /api/auth/register | Public |
-| POST | /api/auth/login | Public |
-| GET | /api/auth/me | Auth |
-| GET | /api/doctors | Public |
-| POST | /api/doctors | Admin |
-| PUT | /api/doctors/:id | Admin/Doctor |
-| DELETE | /api/doctors/:id | Admin |
-| GET | /api/appointments | Auth |
-| POST | /api/appointments | Patient |
-| PUT | /api/appointments/:id | Auth |
-| GET | /api/patients | Admin/Doctor |
-| GET | /api/patients/me | Patient |
-| PUT | /api/patients/:id | Patient/Admin |
-| POST | /api/prescriptions | Doctor |
-| GET | /api/prescriptions/my | Patient |
-| GET | /api/prescriptions/:appointmentId | Auth |
-| GET | /api/admin/analytics | Admin |
-| GET | /api/admin/users | Admin |
-| DELETE | /api/admin/users/:id | Admin |
+| POST | `/api/auth/register` | Public |
+| POST | `/api/auth/login` | Public |
+| GET | `/api/auth/me` | Auth |
+| GET | `/api/doctors` | Public |
+| POST | `/api/doctors` | Admin |
+| PUT | `/api/doctors/:id` | Admin/Doctor |
+| DELETE | `/api/doctors/:id` | Admin |
+| GET | `/api/appointments` | Auth |
+| POST | `/api/appointments` | Patient |
+| PUT | `/api/appointments/:id` | Auth |
+| GET | `/api/patients` | Admin/Doctor |
+| GET | `/api/patients/me` | Patient |
+| PUT | `/api/patients/:id` | Patient/Admin |
+| POST | `/api/prescriptions` | Doctor |
+| GET | `/api/prescriptions/my` | Patient |
+| GET | `/api/prescriptions/:appointmentId` | Auth |
+| GET | `/api/admin/analytics` | Admin |
+| GET | `/api/admin/users` | Admin |
+| DELETE | `/api/admin/users/:id` | Admin |
 
 ---
 
-## Tech Stack
+## 🚀 Deployment
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18, Vite, Tailwind CSS |
-| State Management | Context API |
-| HTTP Client | Axios |
-| Routing | React Router v6 |
-| Backend | Node.js, Express.js |
-| Database | MongoDB, Mongoose |
-| Auth | JWT, bcryptjs |
-| Notifications | react-hot-toast |
-| Icons | lucide-react |
+```bash
+# 1. Build frontend
+npm run build
+```
+
+- Deploy the `dist` folder to **Netlify / Vercel**
+- Deploy backend to **Render / Railway / VPS**
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+```bash
+git checkout -b feature/AmazingFeature
+git commit -m "Add AmazingFeature"
+git push origin feature/AmazingFeature
+```
+
+Then open a **Pull Request** 🚀
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — free for personal and commercial use.
+
+---
+
+## 🔗 Live Demo
+
+👉 [https://medicarehospitalmanagementsystem.netlify.app](https://medicarehospitalmanagementsystem.netlify.app)
+
+---
+
+## 🙌 Acknowledgements
+
+Built following best practices of MERN architecture, scalable backend design, and modern React UI patterns.
+
+---
+
+*Made with ❤️ by Tikesh*
