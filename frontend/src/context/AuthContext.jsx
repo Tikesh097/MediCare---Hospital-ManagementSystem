@@ -33,11 +33,30 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const register = async (name, email, password, role) => {
+  try {
+    const response = await authService.register({
+      name,
+      email,
+      password,
+      role,
+    });
+
+    return { success: true, data: response.data };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Registration failed",
+    };
+  }
+};
+
   const value = {
     user,
     loading,
     login,
     logout,
+    register,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
     isDoctor: user?.role === 'doctor',

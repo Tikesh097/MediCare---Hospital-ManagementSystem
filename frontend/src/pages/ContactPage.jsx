@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const contactInfo = [
   { icon: '📍', title: 'Address', detail: '123 Medical Drive, Healthcare City, MH 440001' },
@@ -9,13 +10,24 @@ const contactInfo = [
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
-    setForm({ name: '', email: '', subject: '', message: '' });
+    setLoading(true);
+    setError('');
+    try {
+      await axios.post('/api/contact', form);
+      setSent(true);
+      setForm({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setSent(false), 5000);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to send message. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,6 +80,11 @@ export default function ContactPage() {
               ✅ Message sent successfully! We'll be in touch soon.
             </div>
           )}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 font-semibold flex items-center gap-2">
+              ❌ {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid sm:grid-cols-2 gap-5">
@@ -79,7 +96,7 @@ export default function ContactPage() {
                   value={form.name}
                   onChange={e => setForm({ ...form, name: e.target.value })}
                   placeholder="Your name"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#1abc9c] focus:ring-2 focus:ring-[#1abc9c]/20 transition-all text-sm"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#1abc9c] focus:ring-2 focus:ring-[#1abc9c]/20 transition-all text-sm bg-gray-50 focus:bg-white"
                 />
               </div>
               <div>
@@ -90,7 +107,7 @@ export default function ContactPage() {
                   value={form.email}
                   onChange={e => setForm({ ...form, email: e.target.value })}
                   placeholder="you@email.com"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#1abc9c] focus:ring-2 focus:ring-[#1abc9c]/20 transition-all text-sm"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#1abc9c] focus:ring-2 focus:ring-[#1abc9c]/20 transition-all text-sm bg-gray-50 focus:bg-white"
                 />
               </div>
             </div>
@@ -102,7 +119,7 @@ export default function ContactPage() {
                 value={form.subject}
                 onChange={e => setForm({ ...form, subject: e.target.value })}
                 placeholder="How can we help?"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#1abc9c] focus:ring-2 focus:ring-[#1abc9c]/20 transition-all text-sm"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#1abc9c] focus:ring-2 focus:ring-[#1abc9c]/20 transition-all text-sm bg-gray-50 focus:bg-white"
               />
             </div>
             <div>
@@ -113,14 +130,17 @@ export default function ContactPage() {
                 value={form.message}
                 onChange={e => setForm({ ...form, message: e.target.value })}
                 placeholder="Write your message here..."
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#1abc9c] focus:ring-2 focus:ring-[#1abc9c]/20 transition-all text-sm resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-[#1abc9c] focus:ring-2 focus:ring-[#1abc9c]/20 transition-all text-sm resize-none bg-gray-50 focus:bg-white"
               />
             </div>
             <button
               type="submit"
-              className="w-full py-4 bg-gradient-to-r from-[#1abc9c] to-[#16a085] text-white font-bold rounded-xl hover:shadow-lg hover:shadow-[#1abc9c]/30 hover:scale-[1.02] transition-all duration-200"
+              disabled={loading}
+              className="w-full py-4 bg-gradient-to-r from-[#1abc9c] to-[#16a085] text-white font-bold rounded-xl hover:shadow-lg hover:shadow-[#1abc9c]/30 hover:scale-[1.02] transition-all duration-200 disabled:opacity-70 disabled:scale-100 flex items-center justify-center gap-2"
             >
-              Send Message →
+              {loading ? (
+                <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />Sending...</>
+              ) : 'Send Message →'}
             </button>
           </form>
         </div>

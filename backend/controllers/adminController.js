@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Doctor = require('../models/Doctor');
 const Patient = require('../models/Patient');
 const Appointment = require('../models/Appointment');
+const Contact = require('../models/Contact');
 
 // @desc    Get dashboard analytics
 // @route   GET /api/admin/analytics
@@ -9,15 +10,23 @@ const Appointment = require('../models/Appointment');
 const getAnalytics = async (req, res, next) => {
   try {
     // Run all count queries in parallel for performance
-    const [totalUsers, totalDoctors, totalPatients, totalAppointments, pendingAppointments, completedAppointments] =
-      await Promise.all([
-        User.countDocuments(),
-        Doctor.countDocuments(),
-        Patient.countDocuments(),
-        Appointment.countDocuments(),
-        Appointment.countDocuments({ status: 'pending' }),
-        Appointment.countDocuments({ status: 'completed' }),
-      ]);
+    const [
+      totalUsers,
+      totalDoctors,
+      totalPatients,
+      totalAppointments,
+      pendingAppointments,
+      completedAppointments,
+      unreadMessages,
+    ] = await Promise.all([
+      User.countDocuments(),
+      Doctor.countDocuments(),
+      Patient.countDocuments(),
+      Appointment.countDocuments(),
+      Appointment.countDocuments({ status: 'pending' }),
+      Appointment.countDocuments({ status: 'completed' }),
+      Contact.countDocuments({ status: 'unread' }),   // NEW
+    ]);
 
     res.json({
       success: true,
@@ -28,6 +37,7 @@ const getAnalytics = async (req, res, next) => {
         totalAppointments,
         pendingAppointments,
         completedAppointments,
+        unreadMessages,   // NEW - shows in admin dashboard
       },
     });
   } catch (error) {
